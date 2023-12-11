@@ -148,8 +148,10 @@ void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
     }
   }
 
-  if (m_enabled && buttonTriggered(m_initPoseBtn, joy) && m_bodyPoseClient.isServerConnected()){
-    callBodyPoseClient("init");
+  if (m_enabled && buttonTriggered(m_initPoseBtn, joy)){
+    std_msgs::String string;
+    string.data = "Hello";
+    m_speechPub.publish(string);
   }
 
   if (buttonTriggered(m_enableBtn, joy)){
