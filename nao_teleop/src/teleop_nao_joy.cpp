@@ -85,11 +85,18 @@ TeleopNaoJoy::TeleopNaoJoy()
   m_stiffnessEnableClient = nh.serviceClient<std_srvs::Empty>("body_stiffness/enable");
 
 
-  if (!m_bodyPoseClient.waitForServer(ros::Duration(3.0))){
-    ROS_WARN_STREAM("Could not connect to \"body_pose\" action server, "
-        << "there will be no body poses available on button presses.\n"
-        << "Is the pose_manager node running?");
-  }
+  /*
+  * All use the bodyPoseClient are commented out as they
+  * require the naoqi body_pose node to be running 
+  * and the node is deprecated.
+  * The code for the node can be found here:
+  * https://github.com/ros-naoqi/naoqi_bridge/tree/master/naoqi_pose
+  */
+  // if (!m_bodyPoseClient.waitForServer(ros::Duration(3.0))){
+  //   ROS_WARN_STREAM("Could not connect to \"body_pose\" action server, "
+  //       << "there will be no body poses available on button presses.\n"
+  //       << "Is the pose_manager node running?");
+  // }
 
   std::cout << "starting button is set to " << m_enableBtn << std::endl;
 }
@@ -99,31 +106,33 @@ ros::Subscriber TeleopNaoJoy::subscribeToJoystick() {
   return subscribeToJoystick(&TeleopNaoJoy::joyCallback, this);
 }
 
-bool TeleopNaoJoy::callBodyPoseClient(const std::string& poseName){
-  if (!m_bodyPoseClient.isServerConnected()){
-    return false;
-  }
+/*
+* Requires pose_manager node
+*/
+// bool TeleopNaoJoy::callBodyPoseClient(const std::string& poseName){
+//   if (!m_bodyPoseClient.isServerConnected()){
+//     return false;
+//   }
 
-  naoqi_bridge_msgs::BodyPoseGoal goal;
-  goal.pose_name = poseName;
-  m_bodyPoseClient.sendGoalAndWait(goal, m_bodyPoseTimeOut);
-  actionlib::SimpleClientGoalState state = m_bodyPoseClient.getState();
-  if (state != actionlib::SimpleClientGoalState::SUCCEEDED){
-    ROS_ERROR("Pose action \"%s\" did not succeed (%s): %s", goal.pose_name.c_str(), state.toString().c_str(), state.text_.c_str());
-    return false;
-  } else{
-    ROS_INFO("Pose action \"%s\" succeeded", goal.pose_name.c_str());
-    return true;
-  }
+//   naoqi_bridge_msgs::BodyPoseGoal goal;
+//   goal.pose_name = poseName;
+//   m_bodyPoseClient.sendGoalAndWait(goal, m_bodyPoseTimeOut);
+//   actionlib::SimpleClientGoalState state = m_bodyPoseClient.getState();
+//   if (state != actionlib::SimpleClientGoalState::SUCCEEDED){
+//     ROS_ERROR("Pose action \"%s\" did not succeed (%s): %s", goal.pose_name.c_str(), state.toString().c_str(), state.text_.c_str());
+//     return false;
+//   } else{
+//     ROS_INFO("Pose action \"%s\" succeeded", goal.pose_name.c_str());
+//     return true;
+//   }
 
-}
+// }
 
 
 void TeleopNaoJoy::initializePreviousJoystick(const Joy::ConstPtr& joy) {
   if(!m_previousJoystick_initialized) {
     // If no previous joystick message has been received
     // assume all buttons and axes have been zero
-    //
     Joy::Ptr pJoy(new Joy());
     pJoy->buttons.resize( joy->buttons.size(), 0);
     pJoy->axes.resize( joy->axes.size(), 0.0);
@@ -144,12 +153,15 @@ void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
 
   // Button commands:
 
-  if (m_enabled && buttonTriggered(m_crouchBtn, joy) && m_bodyPoseClient.isServerConnected()){
-    if (callBodyPoseClient("crouch")){
-      std_srvs::Empty e;
-      m_stiffnessDisableClient.call(e);
-    }
-  }
+  /*
+  * Requires pose_manager node
+  */
+  // if (m_enabled && buttonTriggered(m_crouchBtn, joy) && m_bodyPoseClient.isServerConnected()){
+  //   if (callBodyPoseClient("crouch")){
+  //     std_srvs::Empty e;
+  //     m_stiffnessDisableClient.call(e);
+  //   }
+  // }
 
   // When x button (button 0) is pressed Pepper says "Goodbye"
   if (m_enabled && buttonTriggered(m_xBtn, joy)){
