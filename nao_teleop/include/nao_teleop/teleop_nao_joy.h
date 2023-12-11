@@ -106,6 +106,8 @@ protected:
   int m_crouchBtn;
   int m_xBtn;
   int m_bBtn;
+  int m_yBtn;
+  int m_aBtn;
   int m_enableBtn;
   int m_modifyHeadBtn;
   double m_maxVx;
