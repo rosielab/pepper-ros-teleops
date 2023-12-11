@@ -121,7 +121,7 @@ bool TeleopNaoJoy::callBodyPoseClient(const std::string& poseName){
 
 void TeleopNaoJoy::initializePreviousJoystick(const Joy::ConstPtr& joy) {
   if(!m_previousJoystick_initialized) {
-    // if no previous joystick message has been received
+    // If no previous joystick message has been received
     // assume all buttons and axes have been zero
     //
     Joy::Ptr pJoy(new Joy());
@@ -142,8 +142,7 @@ void TeleopNaoJoy::initializePreviousJoystick(const Joy::ConstPtr& joy) {
 void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
   initializePreviousJoystick(joy);
 
-  // Buttons:
-  // TODO: make buttons generally configurable by mapping btn_id => pose_string
+  // Button commands:
 
   if (m_enabled && buttonTriggered(m_crouchBtn, joy) && m_bodyPoseClient.isServerConnected()){
     if (callBodyPoseClient("crouch")){
@@ -152,30 +151,36 @@ void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
     }
   }
 
+  // When x button (button 0) is pressed Pepper says "Goodbye"
   if (m_enabled && buttonTriggered(m_xBtn, joy)){
     std_msgs::String string;
     string.data = "Goodbye";
     m_speechPub.publish(string);
   }
 
+  // When b button (button 2) is pressed Pepper says "Hello"
   if (m_enabled && buttonTriggered(m_bBtn, joy)){
     std_msgs::String string;
     string.data = "Hello";
     m_speechPub.publish(string);
   }
 
+  // When y button (button 3) is pressed Pepper says "Excuse me"
   if (m_enabled && buttonTriggered(m_yBtn, joy)){
     std_msgs::String string;
     string.data = "Excuse me";
     m_speechPub.publish(string);
   }
 
+  // When a button (button 1) is pressed Pepper says "Thank you"
   if (m_enabled && buttonTriggered(m_aBtn, joy)){
     std_msgs::String string;
     string.data = "Thank you";
     m_speechPub.publish(string);
   }
 
+  // When start button (button 9) toggle remote between enabled and disabled
+  // Pepper will announce change
   if (buttonTriggered(m_enableBtn, joy)){
     std_msgs::String string;
     if (m_enabled){
@@ -194,22 +199,23 @@ void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
   }
 
 
-  // directional commands
-  // walking velocities and head movements
+  // Directional commands:
+  
+  // Walking velocities and head movements
   if (!axisValid(m_xAxis, joy) ||  !axisValid(m_yAxis, joy) || !axisValid(m_turnAxis, joy)){
     m_motion.linear.x = m_motion.linear.y = m_motion.angular.z = 0.0f;
     m_headAngles.joint_angles[0] = m_headAngles.joint_angles[1] = 0.0f;
     ROS_WARN("Joystick message too short for Move or Turn axis!\n");
   } else{
     if (buttonPressed(m_modifyHeadBtn, joy)){
-      // move head
+      // Move head
       m_headAngles.header.stamp = ros::Time::now();
       m_headAngles.relative = 1;
       m_headAngles.joint_angles[0] = joy->axes[m_turnAxis];
       m_headAngles.joint_angles[1] = joy->axes[m_xAxis];
 
     } else {
-      // stop head:
+      // Stop head:
       m_headAngles.joint_angles[0] = m_headAngles.joint_angles[1] = 0.0f;
       // move base:
       m_motion.linear.x = m_maxVx * std::max(std::min(joy->axes[m_xAxis], 1.0f), -1.0f);
@@ -218,19 +224,6 @@ void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
 
     }
   }
-
-  /*
-      // Head pos:
-      if (!axisValid(m_headPitchAxis, joy) || !axisValid(m_headYawAxis, joy)){
-      m_headAngles.absolute = 0;
-      m_headAngles.yaw = 0.0;
-      m_headAngles.pitch = 0.0;
-      } else {
-      m_headAngles.absolute = 0;
-      m_headAngles.yaw = joy->axes[m_headYawAxis];
-      m_headAngles.pitch = joy->axes[m_headPitchAxis];
-      }
-   */
 
   setPreviousJoystick(joy);
 
