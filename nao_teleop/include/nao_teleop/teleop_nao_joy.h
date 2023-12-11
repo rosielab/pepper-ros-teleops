@@ -104,7 +104,8 @@ protected:
   int m_headYawAxis;
   int m_headPitchAxis;
   int m_crouchBtn;
-  int m_initPoseBtn;
+  int m_xBtn;
+  int m_bBtn;
   int m_enableBtn;
   int m_modifyHeadBtn;
   double m_maxVx;

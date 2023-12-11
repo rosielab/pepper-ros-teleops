@@ -6,7 +6,7 @@ btn_enable_control: 3
 btn_head_mod: 11
 btn_start_scan: 13
 btn_stop_scan: 12
-btn_init_pose: 15
+btn_b: 15
 
 
 

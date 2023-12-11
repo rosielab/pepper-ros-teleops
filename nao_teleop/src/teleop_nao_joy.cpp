@@ -40,7 +40,7 @@ namespace nao_teleop{
 TeleopNaoJoy::TeleopNaoJoy()
 : privateNh("~"), m_enabled(false),
   m_xAxis(3), m_yAxis(2), m_turnAxis(0), m_headYawAxis(4),	m_headPitchAxis(5),
-  m_crouchBtn(8), m_initPoseBtn(0), m_enableBtn(9), m_modifyHeadBtn(5),
+  m_crouchBtn(8), m_xBtn(0), m_enableBtn(9), m_modifyHeadBtn(5),
   m_maxVx(1.0), m_maxVy(1.0), m_maxVw(0.5),
   m_maxHeadYaw(2.0943), m_maxHeadPitch(0.7853),
   m_bodyPoseTimeOut(5.0),
@@ -54,7 +54,7 @@ TeleopNaoJoy::TeleopNaoJoy()
   privateNh.param("axis_head_yaw", m_headYawAxis, m_headYawAxis);
   privateNh.param("axis_head_pitch", m_headPitchAxis, m_headPitchAxis);
   privateNh.param("btn_crouch", m_crouchBtn, m_crouchBtn);
-  privateNh.param("btn_init_pose", m_initPoseBtn, m_initPoseBtn);
+  privateNh.param("btn_x", m_xBtn, m_xBtn);
   privateNh.param("btn_enable_control", m_enableBtn, m_enableBtn);
   privateNh.param("btn_head_mod", m_modifyHeadBtn, m_modifyHeadBtn);
   privateNh.param("max_vx", m_maxVx, m_maxVx);
@@ -148,9 +148,9 @@ void TeleopNaoJoy::joyCallback(const Joy::ConstPtr& joy){
     }
   }
 
-  if (m_enabled && buttonTriggered(m_initPoseBtn, joy)){
+  if (m_enabled && buttonTriggered(m_xBtn, joy)){
     std_msgs::String string;
-    string.data = "Hello";
+    string.data = "Hi";
     m_speechPub.publish(string);
   }
 
