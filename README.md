@@ -135,6 +135,12 @@ Because of this, any uses of this node **have been commented out**, but have not
 
 A partially updated version of the Naoqi Pose Manager can be found [here](https://github.com/alyssarusk/naoqi-pose/tree/main). This package also requires Naoqi Node found in Naoqi Driver Py package (also deprecated). A partially updated version of the Naoqi Node can be found [here](https://github.com/alyssarusk/naoqi-driver-py/tree/main)
 
+## Tests
+
+Tests are done manually by using the controller and observing Pepper.
+
+An excel file is included for tests to run, their expected results, and their current results for the current version of the teleops package.
+
 
 
 
